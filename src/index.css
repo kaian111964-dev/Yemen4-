@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Cairo', 'Tajawal', system-ui, sans-serif;
+  --color-yemen-bg: #070b14;
+  --color-yemen-card: #0e1726;
+  --color-yemen-border: #1e293b;
+  --color-yemen-red: #d92323;
+  --color-yemen-red-hover: #b91c1c;
+  --color-yemen-gold: #f59e0b;
+  --color-yemen-navy: #0f1e36;
+}
+
+@layer base {
+  html {
+    direction: rtl;
+    font-family: 'Cairo', 'Tajawal', system-ui, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  html.light, :root:not(.dark) {
+    background-color: #f4f6f9;
+    color: #0f172a;
+    color-scheme: light;
+  }
+  html.dark {
+    background-color: #070b14;
+    color: #f1f5f9;
+    color-scheme: dark;
+  }
+  body {
+    font-family: 'Cairo', 'Tajawal', system-ui, sans-serif;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  html.light body, :root:not(.dark) body {
+    background-color: #f4f6f9;
+    color: #0f172a;
+  }
+  html.dark body {
+    background-color: #070b14;
+    color: #f1f5f9;
+  }
+  *, ::before, ::after {
+    font-family: 'Cairo', 'Tajawal', system-ui, sans-serif;
+  }
+}
+
+/* =========================================================
+   YEMEN 4 PORTAL BRAND THEMES & COLOR CONTRASTS
+   ========================================================= */
+
+/* Light Theme Variables (الوضع الفاتح الأنيق) */
+:root, html.light {
+  --bg-primary: #f4f6f9;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --brand-red: #d92323;
+  --brand-red-hover: #b91c1c;
+  --brand-gold: #d97706;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+}
+
+/* Dark Theme Variables (الوضع الداكن المظلم) */
+html.dark {
+  --bg-primary: #070b14;
+  --bg-secondary: #0e1726;
+  --bg-card: #131d31;
+  --border-color: #1e293b;
+  --brand-red: #d92323;
+  --brand-red-hover: #b91c1c;
+  --brand-gold: #f59e0b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+}
+
+/* Theme 1: High Contrast Yemen 4 Portal Theme (نمط التباين العالي للهوية) */
+.theme-yemen4-contrast {
+  --bg-primary: #04070d;
+  --bg-secondary: #0b1220;
+  --bg-card: #111b2e;
+  --border-color: #24344d;
+  --brand-red: #e11d48;
+  --brand-red-hover: #be123c;
+  --brand-gold: #f59e0b;
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+}
+
+/* Theme 2: Classic Navy Yemen 4 Theme (النمط الكلاسيكي الداكن) */
+.theme-yemen4-navy {
+  --bg-primary: #090e1a;
+  --bg-secondary: #10192d;
+  --bg-card: #17243e;
+  --border-color: #1e2d4a;
+  --brand-red: #d92323;
+  --brand-red-hover: #b91c1c;
+  --brand-gold: #fbbf24;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+}
+
+/* Custom Scrollbar for News Portal */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #070b14;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d92323;
+}
+
+/* Ticker Marquee Animation - 100% Continuous Seamless Infinite Loop (Left-to-Right Flow) */
+@keyframes ticker-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-ticker-continuous,
+.animate-ticker-reverse {
+  display: flex;
+  width: max-content;
+  animation: ticker-reverse 40s linear infinite;
+  will-change: transform;
+}
+
+.animate-ticker-continuous:hover,
+.animate-ticker-reverse:hover {
+  animation-play-state: paused;
+}
+
+/* Red Pulsing Dot for Live Indicator */
+@keyframes pulse-red {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.15);
+  }
+}
+
+.live-pulse {
+  animation: pulse-red 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+
+
+

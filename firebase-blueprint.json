@@ -1,0 +1,122 @@
+{
+  "entities": {
+    "Article": {
+      "title": "Article",
+      "description": "News article item published on the platform",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "excerpt": { "type": "string", "maxLength": 1000 },
+        "content": { "type": "string", "maxLength": 50000 },
+        "category": { "type": "string", "maxLength": 100 },
+        "categoryColor": { "type": "string", "maxLength": 50 },
+        "imageUrl": { "type": "string", "maxLength": 2000 },
+        "publishDate": { "type": "string", "maxLength": 100 },
+        "isoDate": { "type": "string", "maxLength": 50 },
+        "timeAgo": { "type": "string", "maxLength": 50 },
+        "viewsCount": { "type": "number" },
+        "isHero": { "type": "boolean" },
+        "isBreaking": { "type": "boolean" },
+        "isLatest": { "type": "boolean" },
+        "inTicker": { "type": "boolean" },
+        "tags": { "type": "array" }
+      },
+      "required": ["title", "category"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global CMS settings for homepage layout and design",
+      "type": "object",
+      "properties": {
+        "siteName": { "type": "string", "maxLength": 200 },
+        "liveStreamUrl": { "type": "string", "maxLength": 2000 },
+        "borderRadius": { "type": "string", "maxLength": 50 },
+        "sectionHeaderColor": { "type": "string", "maxLength": 50 },
+        "sectionTitleSize": { "type": "string", "maxLength": 50 },
+        "bodyTextSize": { "type": "string", "maxLength": 50 },
+        "containerPadding": { "type": "string", "maxLength": 50 },
+        "sectionSpacing": { "type": "string", "maxLength": 50 },
+        "cardShadow": { "type": "string", "maxLength": 50 },
+        "tickerText": { "type": "array" }
+      }
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "User comment on an article",
+      "type": "object",
+      "properties": {
+        "articleId": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "userName": { "type": "string", "maxLength": 100 },
+        "userAvatar": { "type": "string", "maxLength": 2000 },
+        "text": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "likes": { "type": "number" },
+        "timestamp": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["articleId", "text"]
+    },
+    "MatchItem": {
+      "title": "MatchItem",
+      "description": "Sports match item",
+      "type": "object",
+      "properties": {
+        "homeTeam": { "type": "string", "maxLength": 100 },
+        "awayTeam": { "type": "string", "maxLength": 100 },
+        "homeScore": { "type": "number" },
+        "awayScore": { "type": "number" },
+        "tournament": { "type": "string", "maxLength": 100 },
+        "date": { "type": "string", "maxLength": 50 },
+        "time": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string", "maxLength": 50 }
+      }
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account profile document",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 200 },
+        "avatar": { "type": "string", "maxLength": 2000 },
+        "role": { "type": "string", "maxLength": 50 },
+        "savedArticles": { "type": "array" }
+      }
+    },
+    "PollItem": {
+      "title": "PollItem",
+      "description": "Audience poll question and options",
+      "type": "object",
+      "properties": {
+        "question": { "type": "string", "maxLength": 500 },
+        "totalVotes": { "type": "number" },
+        "options": { "type": "array" }
+      }
+    }
+  },
+  "firestore": {
+    "/articles/{articleId}": {
+      "schema": "Article",
+      "description": "Collection of news articles"
+    },
+    "/settings/{settingsId}": {
+      "schema": "SiteSettings",
+      "description": "Global CMS settings document"
+    },
+    "/comments/{commentId}": {
+      "schema": "Comment",
+      "description": "User comments"
+    },
+    "/matches/{matchId}": {
+      "schema": "MatchItem",
+      "description": "Sports matches"
+    },
+    "/polls/{pollId}": {
+      "schema": "PollItem",
+      "description": "Audience poll document"
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile document"
+    }
+  }
+}

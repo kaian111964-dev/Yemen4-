@@ -1,0 +1,6 @@
+{
+  "name": "يمن 4 - قناة كل اليمن HD",
+  "description": "الموقع الإخباري الرسمي لقناة يمن 4 HD - بث مباشر، أخبار عاجلة، تقارير حصرية، برامج إخبارية، وأسعار العملات والطقس.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
