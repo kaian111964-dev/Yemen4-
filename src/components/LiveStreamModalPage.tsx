@@ -104,16 +104,34 @@ export const LiveStreamModalPage: React.FC = () => {
                       activeStreamUrl.toLowerCase().includes('.m3u');
 
   const getEmbedYouTubeUrl = (url: string) => {
+    if (!url) return 'https://www.youtube.com/embed/live_stream';
     if (url.includes('embed/')) return url;
-    let videoId = '';
+
+    // YouTube live link: /live/
+    if (url.includes('/live/')) {
+      const parts = url.split('/live/');
+      const videoId = parts[1]?.split('?')[0]?.split('&')[0] || '';
+      if (videoId) return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=0&controls=1`;
+    }
+
+    // YouTube watch link: v=
     if (url.includes('v=')) {
-      videoId = url.split('v=')[1]?.split('&')[0] || '';
-    } else if (url.includes('youtu.be/')) {
-      videoId = url.split('youtu.be/')[1]?.split('?')[0] || '';
+      const videoId = url.split('v=')[1]?.split('&')[0] || '';
+      if (videoId) return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=0&controls=1`;
     }
-    if (videoId) {
-      return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=0&controls=1`;
+
+    // Short link: youtu.be/
+    if (url.includes('youtu.be/')) {
+      const videoId = url.split('youtu.be/')[1]?.split('?')[0] || '';
+      if (videoId) return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=0&controls=1`;
     }
+
+    // Channel handle: @
+    if (url.includes('@')) {
+      const channelName = url.split('@')[1]?.split('/')[0] || '';
+      if (channelName) return `https://www.youtube.com/embed/live_stream?channel=${channelName}`;
+    }
+
     return url;
   };
 
@@ -192,10 +210,34 @@ export const LiveStreamModalPage: React.FC = () => {
                   </div>
                 </div>
               ) : selectedServer === 'audio' ? (
-                <div className="w-full h-full bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
-                  <Radio className="w-20 h-20 text-red-500 animate-pulse mb-4" />
-                  <h3 className="text-xl font-bold text-white">البث الصوتي المباشر (راديو يمن 4)</h3>
-                  <p className="text-xs text-slate-400 mt-2">استمع للبث المباشر باستهلاك خفيف جداً للبيانات</p>
+                <div className="w-full h-full bg-gradient-to-br from-slate-950 via-red-950/40 to-slate-950 flex flex-col items-center justify-center p-6 text-center select-none">
+                  <div className="relative mb-3">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-red-600/20 border-2 border-red-500 flex items-center justify-center shadow-2xl animate-pulse">
+                      <Radio className="w-10 h-10 sm:w-12 sm:h-12 text-red-500" />
+                    </div>
+                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full border border-red-400 shadow">
+                      94.5 FM
+                    </span>
+                  </div>
+
+                  <h3 className="text-lg sm:text-2xl font-black text-white">راديو يمن 4 - البث الإذاعي المباشر</h3>
+                  <p className="text-xs text-slate-300 font-bold mt-1">تغطية صوتية حية لمختلف المحافظات اليمنية • استهلاك خفيف جداً للبيانات</p>
+
+                  {/* Equalizer animation */}
+                  <div className="flex items-center gap-1.5 h-6 sm:h-8 my-3">
+                    <span className="w-1.5 h-full bg-red-500 rounded-full animate-bounce"></span>
+                    <span className="w-1.5 h-3/4 bg-red-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span className="w-1.5 h-1/2 bg-amber-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                    <span className="w-1.5 h-full bg-red-500 rounded-full animate-bounce [animation-delay:0.1s]"></span>
+                    <span className="w-1.5 h-2/3 bg-red-400 rounded-full animate-bounce [animation-delay:0.3s]"></span>
+                  </div>
+
+                  <audio
+                    controls
+                    autoPlay
+                    src={cmsData.radioStreamUrl || cmsData.siteSettings?.radioStreamUrl || 'https://stream.zeno.fm/f3v6288y88ruv'}
+                    className="w-full max-w-md accent-red-600 shadow-xl rounded-xl border border-slate-700 bg-slate-900/80"
+                  />
                 </div>
               ) : isHlsStream ? (
                 /* Native / HLS.js Video Element for streams */

@@ -17,6 +17,7 @@ export const HeaderNav: React.FC = () => {
     { id: 'videos', label: 'الفيديو', icon: Video, isPage: true },
     { id: 'live', label: 'البث المباشر', icon: Tv, isPage: true, isLive: true },
     { id: 'program', label: 'الجدول والبرامج', icon: Calendar, isPage: true },
+    { id: 'admin', label: 'yemen4 ad', icon: Settings, isPage: true, isAdminBtn: true },
   ];
 
   const handleNavClick = (item: typeof navItems[0]) => {
@@ -79,15 +80,15 @@ export const HeaderNav: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setCurrentView('admin')}
-            title="لوحة تحكم إدارة المحتوى"
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all shadow-md ${
+            title="لوحة تحكم إدارة المحتوى (yemen4 ad)"
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-black transition-all shadow-md ${
               isDarkMode
-                ? 'bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700/80 hover:border-red-500/50'
-                : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 hover:border-red-500/50'
+                ? 'bg-red-950/80 hover:bg-red-900 text-red-200 border border-red-800/80 hover:border-red-500'
+                : 'bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 hover:border-red-400'
             }`}
           >
             <Settings className="w-4 h-4 text-red-500 animate-spin-slow" />
-            <span className="hidden sm:inline">إدارة المحتوى</span>
+            <span className="font-extrabold tracking-wide">yemen4 ad</span>
           </button>
 
           {/* Mobile Menu Button */}

@@ -3,7 +3,67 @@ import { CMSData, Comment, NotificationItem, UserProfile, SiteLayoutSettings, Po
 export const YEMEN4_LOGO_URL = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhjwI0VwFD260hw2q-gGfbRq0AE0uv_9wbenkGCQCSZWPij90Nc0uf5ZQNK7uqTaQlTNiUya46dR2arzNeeAVtemoAb4kW2GT5zmxnjmAJT-hqdCjpZztryFXkQ2cQsFfUcQWcqP8cj0hdjA1rCjreIqs_NNEq62n8l6KqpcT2co_cFHNYU1GVgcVh0zqI/s320/%D9%A2%D9%A0%D9%A2%D9%A6%D9%A0%D9%A7%D9%A2%D9%A3_%D9%A2%D9%A1%D9%A1%D9%A0%D9%A1%D9%A4.png';
 export const DEFAULT_LIVE_POSTER_URL = 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEimSIfH3K4jgAbw52ZQDYBhg3prQb0Ve0vdvorl8lU1jz_HRnx8jt-gK-5914WpT9BeTzquGzkvAKw5bmP99z60RibJr_A1koD_vAJc2CjJcALcbJ_CZ3uDjWksbZP54t7XOAMIGbYbgkcSYUANwES8RivlLP2xobeIYK-_jyku9UdOo8IEP2wNY2Z4j0w/s1402/file_00000000df9081fdb3570f5dd351d53a.png';
 
+export const initialRegisteredUsers: UserProfile[] = [
+  {
+    id: 'usr-admin-1',
+    name: 'رئيس الإدارة والتحرير',
+    email: 'kaiandawoud@gmail.com',
+    password: '738104363',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+    bio: 'رئيس مجلس الإدارة والتحرير لشبكة قناة يمن 4 HD',
+    savedArticles: ['art-1'],
+    joinedDate: 'يناير 2024',
+    role: 'admin',
+    isAdmin: true,
+    permissions: {
+      canAddArticles: true,
+      canEditArticles: true,
+      canDeleteArticles: true,
+      canManageTicker: true,
+      canManageMatches: true,
+      canManageLiveStream: true,
+      canManageLayout: true,
+      canManageCurrencies: true
+    }
+  },
+  {
+    id: 'usr-editor-1',
+    name: 'أحمد الحاج',
+    email: 'ahmed.haj@yemen4.tv',
+    password: 'editor123456',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+    bio: 'محرر الشؤون السياسية والميدانية في قناة يمن 4',
+    savedArticles: ['art-2'],
+    joinedDate: 'مارس 2024',
+    role: 'editor',
+    isAdmin: false,
+    permissions: {
+      canAddArticles: true,
+      canEditArticles: true,
+      canDeleteArticles: false,
+      canManageTicker: true,
+      canManageMatches: true,
+      canManageLiveStream: false,
+      canManageLayout: false,
+      canManageCurrencies: false
+    }
+  },
+  {
+    id: 'usr-user-1',
+    name: 'مواطن يمني',
+    email: 'yemeni.user@yemen4.tv',
+    password: 'user123456',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+    bio: 'متابع مهتم بالشؤون السياسية والإقليمية والرياضة اليمنية.',
+    savedArticles: ['art-1', 'art-4'],
+    joinedDate: 'يناير 2025',
+    role: 'user',
+    isAdmin: false
+  }
+];
+
 export const initialCMSData: CMSData = {
+  registeredUsers: initialRegisteredUsers,
   tickerText: [
     'الحكومة اليمنية تعلن استهداف سفينتين نفتيتين سعوديتين تثبيتاً لمعادلة الحصار بالحصار ورداً على استمرار الحصار المفروض على الشعب اليمني',
     'عاجل: اجتماع رئاسي موسع في العاصمة صنعاء لمناقشة التطورات الأجهزة التنفيذية والأوضاع الميدانية',
@@ -12,6 +72,7 @@ export const initialCMSData: CMSData = {
   ],
   liveStreamUrl: 'https://www.youtube.com/embed/live_stream?channel=UCyemen4tv_official',
   liveStreamPosterUrl: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEimSIfH3K4jgAbw52ZQDYBhg3prQb0Ve0vdvorl8lU1jz_HRnx8jt-gK-5914WpT9BeTzquGzkvAKw5bmP99z60RibJr_A1koD_vAJc2CjJcALcbJ_CZ3uDjWksbZP54t7XOAMIGbYbgkcSYUANwES8RivlLP2xobeIYK-_jyku9UdOo8IEP2wNY2Z4j0w/s1402/file_00000000df9081fdb3570f5dd351d53a.png',
+  radioStreamUrl: 'https://stream.zeno.fm/f3v6288y88ruv',
   liveViewersCount: 125430,
   isLiveNow: true,
   articles: [

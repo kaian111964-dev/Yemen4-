@@ -161,6 +161,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         ...prev,
         liveStreamUrl: newSettings.liveStreamUrl || prev.liveStreamUrl,
         liveStreamPosterUrl: newSettings.liveStreamPosterUrl !== undefined ? newSettings.liveStreamPosterUrl : prev.liveStreamPosterUrl,
+        radioStreamUrl: newSettings.radioStreamUrl || prev.radioStreamUrl,
         siteSettings: {
           ...prev.siteSettings,
           ...newSettings

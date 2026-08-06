@@ -15,13 +15,31 @@ export const TickerBar: React.FC = () => {
   const posRef = useRef<number>(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  const rawTickerItems =
-    cmsData.tickerText && cmsData.tickerText.length > 0
-      ? cmsData.tickerText
-      : ['عاجل: قناة يمن 4 HD - البث المباشر والأخبار العاجلة على مدار الساعة'];
+  // Collect breaking news articles synced from Firestore
+  const breakingArticles = (cmsData.articles || []).filter(a => a.isBreaking || a.isUrgent || a.inTicker);
+
+  // Build ticker items dynamically
+  const dynamicItems: { text: string; articleId?: string }[] = [];
+
+  // 1. Add active breaking news articles from Firestore
+  breakingArticles.forEach(a => {
+    dynamicItems.push({ text: `عاجل: ${a.title}`, articleId: a.id });
+  });
+
+  // 2. Add custom ticker text entries if set
+  if (cmsData.tickerText && cmsData.tickerText.length > 0) {
+    cmsData.tickerText.forEach(t => {
+      dynamicItems.push({ text: t });
+    });
+  }
+
+  // 3. Fallback if empty
+  if (dynamicItems.length === 0) {
+    dynamicItems.push({ text: 'عاجل: قناة يمن 4 HD - البث المباشر والأخبار العاجلة والتغطيات الحصرية على مدار الساعة' });
+  }
 
   // Duplicate items array to ensure seamless infinite looping track
-  const tickerItems = [...rawTickerItems, ...rawTickerItems, ...rawTickerItems];
+  const tickerItems = [...dynamicItems, ...dynamicItems, ...dynamicItems];
 
   useEffect(() => {
     let lastTime = performance.now();
@@ -35,7 +53,6 @@ export const TickerBar: React.FC = () => {
         const halfWidth = track.scrollWidth / 2;
 
         if (!isPaused && halfWidth > 0) {
-          // Smooth continuous infinite scrolling from Left to Right (من اليسار إلى اليمين)
           const speed = 45;
           posRef.current += (speed * delta) / 1000;
 
@@ -43,7 +60,6 @@ export const TickerBar: React.FC = () => {
             posRef.current -= halfWidth;
           }
 
-          // Offset ranges from -halfWidth to 0 as posRef increases, creating seamless Left-to-Right (+ direction) motion
           track.style.transform = `translate3d(${posRef.current - halfWidth}px, 0, 0)`;
         }
       }
@@ -58,18 +74,18 @@ export const TickerBar: React.FC = () => {
         cancelAnimationFrame(animFrameId.current);
       }
     };
-  }, [isPaused, cmsData.tickerText]);
+  }, [isPaused, cmsData.tickerText, cmsData.articles]);
 
-  const renderNewsList = (list: string[], prefix: string) => (
+  const renderNewsList = (list: { text: string; articleId?: string }[], prefix: string) => (
     <div className="flex items-center shrink-0">
       {list.map((item, idx) => (
         <div key={`${prefix}-${idx}`} className="inline-flex items-center shrink-0">
           <span
-            onClick={() => navigateToArticle('art-1')}
+            onClick={() => navigateToArticle(item.articleId || breakingArticles[0]?.id || 'art-1')}
             className="inline-flex items-center cursor-pointer hover:text-amber-200 transition-colors px-3 shrink-0"
           >
             <span className="whitespace-nowrap font-bold text-xs sm:text-sm text-white drop-shadow-sm">
-              {item}
+              {item.text}
             </span>
           </span>
 

@@ -103,6 +103,17 @@ export interface WeatherData {
   }[];
 }
 
+export interface UserPermissions {
+  canAddArticles?: boolean;
+  canEditArticles?: boolean;
+  canDeleteArticles?: boolean;
+  canManageTicker?: boolean;
+  canManageMatches?: boolean;
+  canManageLiveStream?: boolean;
+  canManageLayout?: boolean;
+  canManageCurrencies?: boolean;
+}
+
 export interface UserProfile {
   id: string;
   name: string;
@@ -111,7 +122,10 @@ export interface UserProfile {
   bio: string;
   savedArticles: string[]; // array of article IDs
   joinedDate: string;
-  role: 'user' | 'editor' | 'admin';
+  role: 'user' | 'editor' | 'admin' | string;
+  isAdmin?: boolean;
+  password?: string;
+  permissions?: UserPermissions;
   notificationsEnabled?: boolean; // toggle smart breaking toast alerts
   soundEnabled?: boolean;         // toggle audio chime for breaking alerts
 }
@@ -173,6 +187,7 @@ export interface SiteLayoutSettings {
   newsSortBy?: 'date' | 'priority' | 'views'; // Sorting mode for slider & news sections
   liveStreamUrl?: string;
   liveStreamPosterUrl?: string;
+  radioStreamUrl?: string;
 }
 
 export interface PollOption {
@@ -193,6 +208,7 @@ export interface CMSData {
   tickerText: string[];
   liveStreamUrl: string;
   liveStreamPosterUrl?: string;
+  radioStreamUrl?: string;
   liveViewersCount: number;
   isLiveNow: boolean;
   articles: Article[];
@@ -205,4 +221,5 @@ export interface CMSData {
   matches?: MatchItem[];
   siteSettings?: SiteLayoutSettings;
   poll?: PollData;
+  registeredUsers?: UserProfile[];
 }

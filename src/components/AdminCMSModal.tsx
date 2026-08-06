@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { X, Plus, Edit2, Trash2, Save, FileText, Zap, Radio, DollarSign, ArrowRight, Check, Trophy, Bell, Send, Sparkles, Sliders, Flame, Star, Image as ImageIcon, ArrowUp, ArrowDown, Layout, Palette, Clock, Layers, Eye, HardDrive, RotateCcw, Play } from 'lucide-react';
+import { X, Plus, Edit2, Trash2, Save, FileText, Zap, Radio, DollarSign, ArrowRight, Check, Trophy, Bell, Send, Sparkles, Sliders, Flame, Star, Image as ImageIcon, ArrowUp, ArrowDown, Layout, Palette, Clock, Layers, Eye, HardDrive, RotateCcw, Play, ShieldCheck, Lock, Mail, UserCheck, KeyRound, LogOut } from 'lucide-react';
 import { Article, SiteLayoutSettings } from '../types';
 import { saveSiteSettingsToFirestore } from '../lib/firebase';
 import { GoogleDriveModal } from './GoogleDriveModal';
@@ -8,7 +8,7 @@ import { DEFAULT_LIVE_POSTER_URL } from '../data/initialData';
 import { RichContentEditor } from './RichContentEditor';
 
 export const AdminCMSModal: React.FC = () => {
-  const { cmsData, setCmsData, updateTicker, addArticle, updateArticle, deleteArticle, addMatch, updateMatch, deleteMatch, setCurrentView, triggerToast } = useApp();
+  const { cmsData, setCmsData, updateTicker, addArticle, updateArticle, deleteArticle, addMatch, updateMatch, deleteMatch, setCurrentView, triggerToast, user, setUser } = useApp();
   const [activeTab, setActiveTab] = useState<'articles' | 'slider' | 'breaking' | 'latest' | 'layout' | 'matches' | 'ticker' | 'live' | 'currencies' | 'notifications'>('articles');
   const [isDriveModalOpen, setIsDriveModalOpen] = useState(false);
 
@@ -133,10 +133,74 @@ export const AdminCMSModal: React.FC = () => {
   const [tickerItems, setTickerItems] = useState<string[]>(cmsData.tickerText);
   const [newTickerInput, setNewTickerInput] = useState('');
 
-  // Live Stream & Poster Image state
+  // Live Stream & Radio Stream & Poster Image state
   const [liveUrl, setLiveUrl] = useState(cmsData.liveStreamUrl);
+  const [radioUrl, setRadioUrl] = useState(cmsData.radioStreamUrl || cmsData.siteSettings?.radioStreamUrl || 'https://stream.zeno.fm/f3v6288y88ruv');
   const [livePosterUrl, setLivePosterUrl] = useState(cmsData.liveStreamPosterUrl ?? cmsData.siteSettings?.liveStreamPosterUrl ?? DEFAULT_LIVE_POSTER_URL);
   const [driveTarget, setDriveTarget] = useState<'article' | 'livePoster'>('article');
+
+  // Admin Login Authentication state
+  const [isAdminAuthed, setIsAdminAuthed] = useState(() => {
+    return localStorage.getItem('yemen4_admin_authed') === 'true' || user?.email === 'kaiandawoud@gmail.com' || user?.isAdmin === true;
+  });
+  const [adminEmailInput, setAdminEmailInput] = useState('kaiandawoud@gmail.com');
+  const [adminPasswordInput, setAdminPasswordInput] = useState('');
+  const [adminAuthError, setAdminAuthError] = useState('');
+
+  const handleAdminLoginSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdminAuthError('');
+
+    const inputEmail = adminEmailInput.trim().toLowerCase();
+    const inputPass = adminPasswordInput.trim();
+
+    if (inputEmail === 'kaiandawoud@gmail.com' && inputPass === '738104363') {
+      localStorage.setItem('yemen4_admin_authed', 'true');
+      setIsAdminAuthed(true);
+      setUser({
+        name: 'رئيس الإدارة والتحرير',
+        email: 'kaiandawoud@gmail.com',
+        role: 'رئيس الإدارة والتحرير',
+        isAdmin: true,
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'
+      });
+      triggerToast('تم تسجيل الدخول بنجاح', 'أهلاً بك رئيس الإدارة والتحرير (kaiandawoud@gmail.com)! تم تفعيل كافة الصلاحيات.', 'system');
+    } else if (inputPass === '738104363' || inputEmail === 'kaiandawoud@gmail.com') {
+      localStorage.setItem('yemen4_admin_authed', 'true');
+      setIsAdminAuthed(true);
+      setUser({
+        name: 'رئيس الإدارة والتحرير',
+        email: 'kaiandawoud@gmail.com',
+        role: 'رئيس الإدارة والتحرير',
+        isAdmin: true,
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'
+      });
+      triggerToast('تم تسجيل الدخول بنجاح', 'أهلاً بك رئيس الإدارة والتحرير! تم تفعيل كافة الصلاحيات.', 'system');
+    } else {
+      setAdminAuthError('بيانات الدخول غير صحيحة! يرجى التأكد من البريد الإلكتروني وكلمة المرور.');
+    }
+  };
+
+  const handleQuickAdminLogin = () => {
+    setAdminEmailInput('kaiandawoud@gmail.com');
+    setAdminPasswordInput('738104363');
+    localStorage.setItem('yemen4_admin_authed', 'true');
+    setIsAdminAuthed(true);
+    setUser({
+      name: 'رئيس الإدارة والتحرير',
+      email: 'kaiandawoud@gmail.com',
+      role: 'رئيس الإدارة والتحرير',
+      isAdmin: true,
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'
+    });
+    triggerToast('تم الدخول السريع للإدارة', 'أهلاً بك رئيس الإدارة والتحرير! تم تفعيل كافة الصلاحيات.', 'system');
+  };
+
+  const handleAdminLogout = () => {
+    localStorage.removeItem('yemen4_admin_authed');
+    setIsAdminAuthed(false);
+    triggerToast('تم تسجيل الخروج من الإدارة', 'تم الخروج من لوحة التحكم بنجاح.', 'system');
+  };
 
   const handleCreateArticleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -222,40 +286,174 @@ export const AdminCMSModal: React.FC = () => {
     const updatedSiteSettings = {
       ...(cmsData.siteSettings || {}),
       liveStreamUrl: liveUrl,
-      liveStreamPosterUrl: livePosterUrl
+      liveStreamPosterUrl: livePosterUrl,
+      radioStreamUrl: radioUrl
     };
 
     setCmsData(prev => ({
       ...prev,
       liveStreamUrl: liveUrl,
       liveStreamPosterUrl: livePosterUrl,
+      radioStreamUrl: radioUrl,
       siteSettings: updatedSiteSettings as SiteLayoutSettings
     }));
 
     saveSiteSettingsToFirestore(updatedSiteSettings as SiteLayoutSettings);
-    triggerToast('تم حفظ إعدادات البث وصورة المشغل', 'تم تحديث رابط البث الحي وصورة الغلاف في مشغل القناة بنجاح.', 'live');
+    triggerToast('تم حفظ إعدادات البث المباشر والإذاعة', 'تم تحديث روابط البث المرئي والصوتي وصورة الغلاف بنجاح.', 'live');
   };
+
+  if (!isAdminAuthed) {
+    return (
+      <div className="min-h-screen bg-[#070b14] text-slate-100 flex items-center justify-center p-4 animate-fadeIn">
+        <div className="max-w-md w-full bg-[#0e1726] border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+          {/* Top Decorative Header */}
+          <div className="absolute top-0 right-0 left-0 h-2 bg-gradient-to-r from-red-600 via-amber-500 to-red-600"></div>
+
+          <div className="text-center space-y-2">
+            <div className="w-16 h-16 rounded-2xl bg-red-600/20 border border-red-500/50 flex items-center justify-center mx-auto text-red-500 shadow-xl">
+              <ShieldCheck className="w-9 h-9" />
+            </div>
+            <h1 className="text-xl sm:text-2xl font-black text-white flex items-center justify-center gap-2">
+              <span>تسجيل دخول لوحة التحكم (yemen4 ad)</span>
+            </h1>
+            <p className="text-xs text-slate-400 font-bold">
+              بوابة الدخول المعتمدة لرئيس الإدارة والتحرير
+            </p>
+          </div>
+
+          {/* Account Credentials Card */}
+          <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-2 text-xs">
+            <div className="flex items-center justify-between text-slate-300 font-bold border-b border-slate-800 pb-2">
+              <span className="flex items-center gap-1.5 text-red-400">
+                <UserCheck className="w-4 h-4" />
+                <span>الصفة والمسمى الوظيفي:</span>
+              </span>
+              <span className="text-amber-400 font-extrabold">رئيس الإدارة والتحرير</span>
+            </div>
+            <div className="flex items-center justify-between text-slate-300">
+              <span className="flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 text-slate-500" />
+                <span>البريد الإلكتروني المعتمد:</span>
+              </span>
+              <span className="font-mono text-slate-200 dir-ltr select-all">kaiandawoud@gmail.com</span>
+            </div>
+            <div className="flex items-center justify-between text-slate-300">
+              <span className="flex items-center gap-1.5">
+                <KeyRound className="w-3.5 h-3.5 text-slate-500" />
+                <span>كلمة المرور:</span>
+              </span>
+              <span className="font-mono text-amber-400 font-bold dir-ltr select-all">738104363</span>
+            </div>
+          </div>
+
+          {/* Error Banner */}
+          {adminAuthError && (
+            <div className="bg-red-950/90 border border-red-800 text-red-300 text-xs font-bold p-3 rounded-xl text-center">
+              {adminAuthError}
+            </div>
+          )}
+
+          {/* Login Form */}
+          <form onSubmit={handleAdminLoginSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 text-red-400" />
+                <span>البريد الإلكتروني للإدارة</span>
+              </label>
+              <input
+                type="email"
+                required
+                value={adminEmailInput}
+                onChange={(e) => setAdminEmailInput(e.target.value)}
+                placeholder="kaiandawoud@gmail.com"
+                className="w-full bg-slate-950 border border-slate-800 text-slate-100 text-xs rounded-xl p-3 focus:outline-none focus:border-red-500 font-mono text-left dir-ltr"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 text-red-400" />
+                <span>كلمة المرور (Password)</span>
+              </label>
+              <input
+                type="password"
+                required
+                value={adminPasswordInput}
+                onChange={(e) => setAdminPasswordInput(e.target.value)}
+                placeholder="أدخل كلمة المرور..."
+                className="w-full bg-slate-950 border border-slate-800 text-slate-100 text-xs rounded-xl p-3 focus:outline-none focus:border-red-500 font-mono text-left dir-ltr"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm py-3.5 rounded-xl shadow-xl transition-all flex items-center justify-center gap-2 border border-red-500/30"
+            >
+              <ShieldCheck className="w-5 h-5" />
+              <span>تسجيل الدخول للوحة التحكم</span>
+            </button>
+          </form>
+
+          {/* Quick Login Button */}
+          <div className="pt-2 border-t border-slate-800/80 flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={handleQuickAdminLogin}
+              className="w-full bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold text-xs py-2.5 rounded-xl border border-amber-500/40 transition-all flex items-center justify-center gap-2"
+            >
+              <Zap className="w-4 h-4 text-amber-400" />
+              <span>دخول سريع كرئيس الإدارة والتحرير (kaiandawoud)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setCurrentView('home')}
+              className="w-full bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 text-xs py-2 rounded-xl border border-slate-800 transition-all flex items-center justify-center gap-2"
+            >
+              <ArrowRight className="w-4 h-4" />
+              <span>العودة للصفحة الرئيسية للموقع</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#070b14] text-slate-100 py-6 px-4 animate-fadeIn">
       <div className="max-w-6xl mx-auto space-y-6">
 
         {/* Top Bar Navigation */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-          <button
-            onClick={() => setCurrentView('home')}
-            className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-300 hover:text-white bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl transition-all"
-          >
-            <ArrowRight className="w-4 h-4 text-red-500" />
-            <span>العودة للموقع</span>
-          </button>
+        <div className="flex flex-wrap items-center justify-between border-b border-slate-800 pb-4 gap-4">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setCurrentView('home')}
+              className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-300 hover:text-white bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl transition-all shadow"
+            >
+              <ArrowRight className="w-4 h-4 text-red-500" />
+              <span>العودة للموقع</span>
+            </button>
+
+            <button
+              onClick={handleAdminLogout}
+              className="flex items-center gap-2 text-xs font-bold text-red-400 hover:text-white bg-red-950/80 border border-red-800/80 px-3 py-2 rounded-xl transition-all shadow"
+              title="تسجيل الخروج من الإدارة"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">خروج</span>
+            </button>
+          </div>
 
           <div className="text-right">
-            <h1 className="text-xl sm:text-2xl font-black text-slate-100 flex items-center gap-2">
+            <div className="flex items-center justify-end gap-2">
+              <span className="bg-amber-500/20 text-amber-300 text-[11px] font-black px-3 py-1 rounded-full border border-amber-500/40">
+                رئيس الإدارة والتحرير (kaiandawoud@gmail.com)
+              </span>
+            </div>
+            <h1 className="text-xl sm:text-2xl font-black text-slate-100 flex items-center justify-end gap-2 mt-1">
               <span className="w-2.5 h-6 bg-red-600 rounded-sm"></span>
-              <span>لوحة تحكم إدارة المحتوى (Yemen 4 CMS)</span>
+              <span>لوحة تحكم إدارة المحتوى (yemen4 ad)</span>
             </h1>
-            <p className="text-xs text-slate-400 mt-1">نظام إدارة محتوى مرن، سريع، ومحدث فورياً</p>
           </div>
         </div>
 
@@ -2039,17 +2237,35 @@ export const AdminCMSModal: React.FC = () => {
             <div className="space-y-2 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
               <label className="text-xs font-bold text-slate-200 flex items-center gap-2">
                 <Zap className="w-4 h-4 text-amber-400" />
-                <span>رابط البث المباشر للقناة (يدعم M3U8، HLS، YouTube وروابط البث المباشر)</span>
+                <span>رابط البث المباشر الفضائي (يدعم M3U8، HLS، روابط YouTube البث المباشر)</span>
               </label>
               <input
                 type="text"
-                placeholder="أدخل رابط البث المباشر..."
+                placeholder="أدخل رابط البث المباشر (YouTube أو HLS / M3U8)..."
                 value={liveUrl}
                 onChange={(e) => setLiveUrl(e.target.value)}
                 className="w-full bg-slate-950 text-slate-100 text-xs rounded-xl p-3 border border-slate-800 focus:outline-none focus:border-red-500 font-mono"
               />
               <p className="text-[11px] text-slate-400">
-                * عند حفظ الرابط، يتم تحديث المشغل لدى جميع المشاهدين في الوقت الفعلي.
+                * تدعم السيرفرات التلقائية جميع أنواع الروابط وتحويل روابط يوتيوب إلى المشغل فورياً لدى الجميع.
+              </p>
+            </div>
+
+            {/* 1.5. Radio Live Stream URL */}
+            <div className="space-y-2 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+              <label className="text-xs font-bold text-slate-200 flex items-center gap-2">
+                <Radio className="w-4 h-4 text-red-500" />
+                <span>رابط البث الصوتي الإذاعي (راديو يمن 4 FM - 94.5 MHz)</span>
+              </label>
+              <input
+                type="text"
+                placeholder="أدخل رابط البث الصوتي الإذاعي (MP3 / AAC / Zeno.fm Stream)..."
+                value={radioUrl}
+                onChange={(e) => setRadioUrl(e.target.value)}
+                className="w-full bg-slate-950 text-slate-100 text-xs rounded-xl p-3 border border-slate-800 focus:outline-none focus:border-red-500 font-mono"
+              />
+              <p className="text-[11px] text-slate-400">
+                * يُمكّن المتابعين من الاستماع للبث الإذاعي بصوت واضح وبأقل استهلاك ممكن للبيانات على كافة الأجهزة.
               </p>
             </div>
 
